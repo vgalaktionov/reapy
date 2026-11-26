@@ -2,10 +2,15 @@ from setuptools import setup, find_packages
 from os import path, walk, sep
 from typing import Dict, List
 
-import reapy
+import re
 
 
 here = path.abspath(path.dirname(__file__))
+
+# Read the version without importing reapy, which needs its dependencies
+# (psutil) and so fails in an isolated build environment.
+with open(path.join(here, "reapy", "__init__.py")) as f:
+    VERSION = re.search(r'^__version__ = "([^"]+)"', f.read(), re.M).group(1)
 
 
 with open(path.join(here, "README.md")) as f:
@@ -24,7 +29,7 @@ def find_stubs(package: str) -> Dict[str, List[str]]:
 
 setup(
     name="python-reapy",
-    version=reapy.__version__,
+    version=VERSION,
     description="A pythonic wrapper for REAPER's ReaScript Python API",
     long_description=long_description,
     long_description_content_type="text/markdown",
